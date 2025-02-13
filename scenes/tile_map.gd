@@ -57,7 +57,9 @@ const steps_req : int = 50
 const start_pos := Vector2i(5,1)
 var cur_pos:Vector2i
 var speed : float
-const ACCEL : float = 0.25
+const ACCEL : float = 0.5
+var move_delay = 0.08  # 이동 속도 조절
+var move_timer = 0.0
 
 #game piece variables
 var piece_type
@@ -82,7 +84,9 @@ var active_layer : int = 1
 # Called when the node enters the scene tree for the first time.
 func _ready():
 	new_game()
-	$HUD.get_node("StartButton").pressed.connect(new_game)
+	var start_button = $HUD.get_node("StartButton")
+	start_button.connect("pressed", Callable(self, "new_game"))
+	start_button.focus_mode = Control.FOCUS_NONE  # 🔥 Spacebar 입력 차단
 	
 func new_game():
 	#reset vatiable
@@ -103,25 +107,34 @@ func new_game():
 
 # Called every frame. 'delta' is the elapsed time since the previous frame.
 func _process(delta):
-	if game_running :
-		if Input.is_action_pressed("ui_left"):
-			steps[0] += 10
-		elif Input.is_action_pressed("ui_right"):
-			steps[1] += 10
-		elif Input.is_action_pressed("ui_down"):
-			steps[2] += 10
-		elif Input.is_action_just_pressed("ui_up"):
-			rotate_piece()  
-		elif Input.is_action_just_pressed("ui_select"):
+	if game_running:
+		move_timer += delta
+		# 🔥 키 입력을 지속적으로 감지 (빠른 반응)
+		if move_timer >= move_delay:
+			if Input.is_action_pressed("ui_left"):
+				move_piece(Vector2i.LEFT)
+			elif Input.is_action_pressed("ui_right"):
+				move_piece(Vector2i.RIGHT)
+			elif Input.is_action_pressed("ui_down"):
+				move_piece(Vector2i.DOWN)
+			move_timer = 0.0  # 타이머 초기화
+		
+		# 🔥 Spacebar 즉시 실행 (한 번만)
+		if Input.is_action_just_pressed("ui_accept"):
 			drop_piece()
+
+		if Input.is_action_just_pressed("ui_up"):
+			rotate_piece()
 			
-		#apply downward movement every frame
+		# Apply downward movement every frame
 		steps[2] += speed
-		#move the piece
+
+		# Move the piece
 		for i in range(steps.size()):
 			if steps[i] > steps_req:
 				move_piece(directions[i])
-				steps[i] = 0
+				steps[i] = 0  # 이동 후 초기화
+
 
 
 func pick_piece():
@@ -241,17 +254,7 @@ func check_game_over():
 			land_piece()
 			$HUD.get_node("GameOverLabel").show()
 			game_running = false
-
+			
 func drop_piece():
-	while can_move(Vector2i.DOWN):
+	while can_move(Vector2i.DOWN):  # 아래로 이동할 수 있을 때까지 반복
 		move_piece(Vector2i.DOWN)
-	# Land the piece once it can't move down anymore
-	land_piece()
-	check_rows()
-	piece_type = next_piece_type
-	piece_atlas = next_piece_atlas
-	next_piece_type = pick_piece()
-	next_piece_atlas = Vector2i(shapes_full.find(next_piece_type), 0)
-	clear_panel()
-	create_piece()
-	check_game_over()
