@@ -121,7 +121,7 @@ func _process(delta):
 		
 		# 🔥 Spacebar 즉시 실행 (한 번만)
 		if Input.is_action_just_pressed("ui_accept"):
-			drop_piece()
+			drop_piece() 
 
 		if Input.is_action_just_pressed("ui_up"):
 			rotate_piece()
