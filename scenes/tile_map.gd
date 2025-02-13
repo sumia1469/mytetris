@@ -111,7 +111,9 @@ func _process(delta):
 		elif Input.is_action_pressed("ui_down"):
 			steps[2] += 10
 		elif Input.is_action_just_pressed("ui_up"):
-			rotate_piece()
+			rotate_piece()  
+		elif Input.is_action_just_pressed("ui_select"):
+			drop_piece()
 			
 		#apply downward movement every frame
 		steps[2] += speed
@@ -239,3 +241,17 @@ func check_game_over():
 			land_piece()
 			$HUD.get_node("GameOverLabel").show()
 			game_running = false
+
+func drop_piece():
+	while can_move(Vector2i.DOWN):
+		move_piece(Vector2i.DOWN)
+	# Land the piece once it can't move down anymore
+	land_piece()
+	check_rows()
+	piece_type = next_piece_type
+	piece_atlas = next_piece_atlas
+	next_piece_type = pick_piece()
+	next_piece_atlas = Vector2i(shapes_full.find(next_piece_type), 0)
+	clear_panel()
+	create_piece()
+	check_game_over()
