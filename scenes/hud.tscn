@@ -1,0 +1,68 @@
+[gd_scene load_steps=5 format=3 uid="uid://bmxxjkqdjubig"]
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_xbkm2"]
+bg_color = Color(0.6, 0.6, 0.6, 0)
+border_width_left = 5
+border_width_top = 5
+border_width_right = 5
+border_width_bottom = 5
+border_color = Color(0.054902, 0.054902, 0.054902, 1)
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_t2lwt"]
+bg_color = Color(0.387442, 0.710434, 0.776994, 1)
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_vyd24"]
+bg_color = Color(0.170212, 0.394612, 0.416098, 1)
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_i0jgq"]
+bg_color = Color(0.266387, 0.43281, 0.380049, 1)
+
+[node name="HUD" type="CanvasLayer"]
+
+[node name="Panel" type="Panel" parent="."]
+offset_left = 425.0
+offset_top = 150.0
+offset_right = 625.0
+offset_bottom = 300.0
+theme_override_styles/panel = SubResource("StyleBoxFlat_xbkm2")
+
+[node name="Label" type="Label" parent="."]
+offset_left = 430.0
+offset_top = 100.0
+offset_right = 610.0
+offset_bottom = 145.0
+theme_override_font_sizes/font_size = 30
+text = "NEXT PIECE :"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="ScoreLabel" type="Label" parent="."]
+offset_left = 450.0
+offset_top = 320.0
+offset_right = 600.0
+offset_bottom = 365.0
+theme_override_font_sizes/font_size = 25
+text = "SCORE : 0"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="GameOverLabel" type="Label" parent="."]
+offset_left = 80.0
+offset_top = 280.0
+offset_right = 290.0
+offset_bottom = 329.0
+theme_override_font_sizes/font_size = 35
+text = "GAME OVER!"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="StartButton" type="Button" parent="."]
+offset_left = 440.0
+offset_top = 420.0
+offset_right = 610.0
+offset_bottom = 460.0
+theme_override_font_sizes/font_size = 28
+theme_override_styles/hover = SubResource("StyleBoxFlat_t2lwt")
+theme_override_styles/pressed = SubResource("StyleBoxFlat_vyd24")
+theme_override_styles/normal = SubResource("StyleBoxFlat_i0jgq")
+text = "NEW GAME"
