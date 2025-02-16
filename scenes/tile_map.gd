@@ -218,6 +218,7 @@ func create_piece():
 	cur_pos = start_pos
 	active_piece = piece_type[rotation_index]
 	draw_piece(active_piece, cur_pos, piece_atlas)
+	clear_panel()
 	draw_piece(next_piece_type[0], Vector2i(9,-2), next_piece_atlas)
 
 func clear_piece():
@@ -278,8 +279,8 @@ func land_piece():
 		set_cell(board_layer, cur_pos+i, tile_id, piece_atlas)
 
 func clear_panel():
-	for i in range(14, 19) :
-		for j in range(5, 9) : 
+	for i in range(9, 14) :
+		for j in range(-2, 3) : 
 			erase_cell(active_layer, Vector2i(i, j))
 
 func check_rows():
