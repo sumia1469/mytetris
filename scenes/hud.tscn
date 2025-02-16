@@ -121,5 +121,4 @@ theme_override_font_sizes/font_size = 28
 theme_override_styles/hover = SubResource("StyleBoxFlat_t2lwt")
 theme_override_styles/pressed = SubResource("StyleBoxFlat_vyd24")
 theme_override_styles/normal = SubResource("StyleBoxFlat_i0jgq")
-text = "pause
-"
+text = "새게임"
