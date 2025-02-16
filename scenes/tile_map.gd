@@ -57,9 +57,17 @@ const steps_req : int = 50
 const start_pos := Vector2i(5,1)
 var cur_pos:Vector2i
 var speed : float
-const ACCEL : float = 0.5
-var move_delay = 0.08  # 이동 속도 조절
+const ACCEL : float = 1.0
+var move_delay = 0.1  # 이동 속도 조절
 var move_timer = 0.0
+
+# 드래그 이동 속도 조절 변수
+var drag_move_delay = 0.05
+var drag_move_timer = 0.0
+
+# 터치와 드래그 이벤트 구분 변수
+var is_dragging = false
+var touch_start_position = Vector2()
 
 #game piece variables
 var piece_type
@@ -81,13 +89,70 @@ var next_piece_atlas : Vector2i
 var board_layer : int = 0
 var active_layer : int = 1
 
+# 드래그 방향 추적 변수
+var drag_direction : String = ""
+
 # Called when the node enters the scene tree for the first time.
 func _ready():
 	new_game()
 	var start_button = $HUD.get_node("StartButton")
 	start_button.connect("pressed", Callable(self, "new_game"))
 	start_button.focus_mode = Control.FOCUS_NONE  # 🔥 Spacebar 입력 차단
-	
+
+	# 터치 이벤트 연결
+	set_process_input(true)
+
+	# 모바일 화면 크기에 맞게 조정
+	#adjust_for_mobile()
+
+# 터치 이벤트 처리
+func _input(event):
+	if event is InputEventScreenTouch:
+		if event.pressed:
+			print("터치 이벤트 감지됨")
+			touch_start_position = event.position
+			is_dragging = false
+		elif not event.pressed:
+			if not is_dragging:
+				print("터치 이벤트 종료됨")
+				handler_touch(event.position)
+			drag_direction = ""  # 드래그가 끝나면 방향 초기화
+	elif event is InputEventScreenDrag:
+		if not is_dragging and touch_start_position.distance_to(event.position) > 10:
+			is_dragging = true
+		if is_dragging:
+			print("드래그 이벤트 감지됨")
+			handler_drag(event.relative)
+
+# 터치 위치에 따라 조작
+func handler_touch(position):
+	print("터치 위치: ", position)
+	rotate_piece()
+
+# 드래그 위치에 따라 조작
+func handler_drag(relative):
+	print("드래그 상대 위치: ", relative)
+	if drag_direction == "":
+		if abs(relative.y) > abs(relative.x):
+			drag_direction = "down"
+		else:
+			drag_direction = "side"
+
+	if drag_direction == "down":
+		if relative.y > 50:  # 강하게 드래그 시 바로 내림
+			drop_piece()
+		else:  # 약하게 드래그 시 빠르게 내림
+			if drag_move_timer >= drag_move_delay:
+				move_piece(Vector2i.DOWN)
+				drag_move_timer = 0.0
+	elif drag_direction == "side":
+		if drag_move_timer >= drag_move_delay:
+			if relative.x < 0:
+				move_piece(Vector2i.LEFT)
+			elif relative.x > 0:
+				move_piece(Vector2i.RIGHT)
+			drag_move_timer = 0.0
+
 func new_game():
 	#reset vatiable
 	score = 0
@@ -109,6 +174,7 @@ func new_game():
 func _process(delta):
 	if game_running:
 		move_timer += delta
+		drag_move_timer += delta  # 드래그 이동 타이머 업데이트
 		# 🔥 키 입력을 지속적으로 감지 (빠른 반응)
 		if move_timer >= move_delay:
 			if Input.is_action_pressed("ui_left"):
@@ -135,8 +201,6 @@ func _process(delta):
 				move_piece(directions[i])
 				steps[i] = 0  # 이동 후 초기화
 
-
-
 func pick_piece():
 	var piece
 	if not shapes.is_empty():
@@ -154,7 +218,7 @@ func create_piece():
 	cur_pos = start_pos
 	active_piece = piece_type[rotation_index]
 	draw_piece(active_piece, cur_pos, piece_atlas)
-	draw_piece(next_piece_type[0], Vector2i(15,6), next_piece_atlas)
+	draw_piece(next_piece_type[0], Vector2i(9,-2), next_piece_atlas)
 
 func clear_piece():
 	for i in active_piece:
@@ -220,7 +284,7 @@ func clear_panel():
 
 func check_rows():
 	var row : int = ROWS
-	while row >0:
+	while row > 0:
 		var count = 0
 		for i in range(COLS):
 			if not is_free(Vector2i(i+1, row)):
@@ -228,7 +292,7 @@ func check_rows():
 		if count == COLS : 
 			shift_row(row)
 			score += REWARD
-			$HUD.get_node("ScoreLabel").text = "SCORE: " +  str(score)
+			$HUD.get_node("ScoreLabel").text = str(score)
 			speed += ACCEL
 		else:
 			row -= 1

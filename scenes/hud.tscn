@@ -1,12 +1,12 @@
 [gd_scene load_steps=5 format=3 uid="uid://bmxxjkqdjubig"]
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_xbkm2"]
-bg_color = Color(0.6, 0.6, 0.6, 0)
-border_width_left = 5
-border_width_top = 5
-border_width_right = 5
-border_width_bottom = 5
-border_color = Color(0.054902, 0.054902, 0.054902, 1)
+bg_color = Color(1, 1, 1, 0)
+border_width_left = 10
+border_width_top = 10
+border_width_right = 10
+border_width_bottom = 10
+border_color = Color(1, 1, 1, 1)
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_t2lwt"]
 bg_color = Color(0.387442, 0.710434, 0.776994, 1)
@@ -20,49 +20,97 @@ bg_color = Color(0.266387, 0.43281, 0.380049, 1)
 [node name="HUD" type="CanvasLayer"]
 
 [node name="Panel" type="Panel" parent="."]
-offset_left = 425.0
-offset_top = 150.0
-offset_right = 625.0
-offset_bottom = 300.0
+offset_left = 781.0
+offset_top = 29.0
+offset_right = 993.0
+offset_bottom = 221.0
+scale = Vector2(1.15004, 1.15004)
 theme_override_styles/panel = SubResource("StyleBoxFlat_xbkm2")
 
-[node name="Label" type="Label" parent="."]
-offset_left = 430.0
-offset_top = 100.0
-offset_right = 610.0
-offset_bottom = 145.0
-theme_override_font_sizes/font_size = 30
-text = "NEXT PIECE :"
+[node name="Panel2" type="Panel" parent="."]
+anchors_preset = -1
+offset_left = 388.0
+offset_top = 29.0
+offset_right = 600.0
+offset_bottom = 269.0
+scale = Vector2(1.53946, 0.935322)
+theme_override_styles/panel = SubResource("StyleBoxFlat_xbkm2")
+
+[node name="Panel3" type="Panel" parent="."]
+offset_left = 59.0
+offset_top = 29.0
+offset_right = 271.0
+offset_bottom = 221.0
+theme_override_styles/panel = SubResource("StyleBoxFlat_xbkm2")
+
+[node name="next" type="Label" parent="."]
+offset_left = 781.0
+offset_top = 42.0
+offset_right = 961.0
+offset_bottom = 97.0
+theme_override_font_sizes/font_size = 40
+text = "NEXT"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="move" type="Label" parent="."]
+offset_left = 59.0
+offset_top = 42.0
+offset_right = 239.0
+offset_bottom = 97.0
+theme_override_font_sizes/font_size = 40
+text = "MOVE
+"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="score" type="Label" parent="."]
+offset_left = 429.0
+offset_top = 42.0
+offset_right = 656.0
+offset_bottom = 111.0
+theme_override_font_sizes/font_size = 40
+text = "SCORE"
 horizontal_alignment = 1
 vertical_alignment = 1
 
 [node name="ScoreLabel" type="Label" parent="."]
-offset_left = 450.0
-offset_top = 320.0
-offset_right = 600.0
-offset_bottom = 365.0
-theme_override_font_sizes/font_size = 25
-text = "SCORE : 0"
+offset_left = 471.0
+offset_top = 138.0
+offset_right = 624.0
+offset_bottom = 221.0
+theme_override_font_sizes/font_size = 60
+text = "0"
 horizontal_alignment = 1
-vertical_alignment = 1
+
+[node name="MoveLabel" type="Label" parent="."]
+offset_left = 94.0
+offset_top = 111.0
+offset_right = 221.0
+offset_bottom = 180.0
+theme_override_font_sizes/font_size = 50
+text = "0
+"
+horizontal_alignment = 1
 
 [node name="GameOverLabel" type="Label" parent="."]
-offset_left = 80.0
-offset_top = 280.0
-offset_right = 290.0
-offset_bottom = 329.0
-theme_override_font_sizes/font_size = 35
+offset_left = 429.0
+offset_top = 806.0
+offset_right = 730.0
+offset_bottom = 875.0
+theme_override_font_sizes/font_size = 50
 text = "GAME OVER!"
 horizontal_alignment = 1
 vertical_alignment = 1
 
 [node name="StartButton" type="Button" parent="."]
-offset_left = 440.0
-offset_top = 420.0
-offset_right = 610.0
-offset_bottom = 460.0
+offset_left = 59.0
+offset_top = 250.0
+offset_right = 229.0
+offset_bottom = 290.0
 theme_override_font_sizes/font_size = 28
 theme_override_styles/hover = SubResource("StyleBoxFlat_t2lwt")
 theme_override_styles/pressed = SubResource("StyleBoxFlat_vyd24")
 theme_override_styles/normal = SubResource("StyleBoxFlat_i0jgq")
-text = "NEW GAME"
+text = "pause
+"
