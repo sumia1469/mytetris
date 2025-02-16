@@ -28,7 +28,6 @@ scale = Vector2(1.15004, 1.15004)
 theme_override_styles/panel = SubResource("StyleBoxFlat_xbkm2")
 
 [node name="Panel2" type="Panel" parent="."]
-anchors_preset = -1
 offset_left = 388.0
 offset_top = 29.0
 offset_right = 600.0
@@ -88,6 +87,16 @@ offset_left = 94.0
 offset_top = 111.0
 offset_right = 221.0
 offset_bottom = 180.0
+theme_override_font_sizes/font_size = 50
+text = "0
+"
+horizontal_alignment = 1
+
+[node name="LevelLabel" type="Label" parent="."]
+offset_left = 200.0
+offset_top = 230.0
+offset_right = 327.0
+offset_bottom = 299.0
 theme_override_font_sizes/font_size = 50
 text = "0
 "

@@ -1,6 +1,6 @@
 extends TileMap
 
-#tetrominoes
+# 테트로미노들
 var i_0 := [Vector2i(0, 1), Vector2i(1, 1), Vector2i(2, 1), Vector2i(3, 1)]
 var i_90 := [Vector2i(2, 0), Vector2i(2, 1), Vector2i(2, 2), Vector2i(2, 3)]
 var i_180 := [Vector2i(0, 2), Vector2i(1, 2), Vector2i(2, 2), Vector2i(3, 2)]
@@ -46,18 +46,18 @@ var j := [j_0, j_90, j_180, j_270]
 var shapes := [i, t, o, z, s, l, j]
 var shapes_full := shapes.duplicate()
 
-#grid variables
+# 그리드 변수
 const COLS : int = 10
 const ROWS : int = 20
 
-#movement vartiables
+# 이동 변수
 const directions := [Vector2i.LEFT, Vector2i.RIGHT, Vector2i.DOWN]
 var steps : Array
 const steps_req : int = 50
 const start_pos := Vector2i(5,1)
 var cur_pos:Vector2i
 var speed : float
-const ACCEL : float = 1.0
+const ACCEL : float = 0.1
 var move_delay = 0.1  # 이동 속도 조절
 var move_timer = 0.0
 
@@ -69,23 +69,27 @@ var drag_move_timer = 0.0
 var is_dragging = false
 var touch_start_position = Vector2()
 
-#game piece variables
+# 게임 조각 변수
 var piece_type
 var next_piece_type
 var rotation_index : int = 0
 var active_piece : Array
 
-#game variables
+# 게임 변수
 var score : int
 const REWARD : int = 100
 var game_running : bool
+var initial_score : int = 500  # 초기 점수
+var move_limit : int = -1  # 움직임 제한 (-1은 무제한)
+var move_count : int = 0  # 현재 움직임 횟수
+var level : int = 1  # 현재 레벨
 
-#titlemap variables
+# 타일맵 변수
 var tile_id : int = 0
 var piece_atlas : Vector2i
 var next_piece_atlas : Vector2i
 
-#layer variables
+# 레이어 변수
 var board_layer : int = 0
 var active_layer : int = 1
 
@@ -101,9 +105,6 @@ func _ready():
 
 	# 터치 이벤트 연결
 	set_process_input(true)
-
-	# 모바일 화면 크기에 맞게 조정
-	#adjust_for_mobile()
 
 # 터치 이벤트 처리
 func _input(event):
@@ -153,21 +154,40 @@ func handler_drag(relative):
 				move_piece(Vector2i.RIGHT)
 			drag_move_timer = 0.0
 
+# 새로운 게임 시작
 func new_game():
-	#reset vatiable
-	score = 0
+	# 변수 초기화
+	level = 1
+	initial_score = 500
+	move_limit = -1
+	start_level()
+
+# 레벨 시작
+func start_level():
+	# 변수 초기화
+	score = initial_score
 	speed = 1.0
 	game_running = true
-	steps = [0, 0, 0]#0:left 1:right, 2:down
+	steps = [0, 0, 0]  # 0:left 1:right, 2:down
+	move_count = 0  # 움직임 횟수 초기화
+	if level > 1:
+		move_limit = 200 - (level - 1) * 5  # 레벨에 따라 움직임 제한 설정
+	else:
+		move_limit = -1  # 첫 번째 레벨은 무제한 이동
 	$HUD.get_node("GameOverLabel").hide()
-	#clear
-	clear_piece()
+	$HUD.get_node("ScoreLabel").text = str(score)
+	if move_limit < 0:
+		$HUD.get_node("MoveLabel").text = "무제한"
+	else:
+		$HUD.get_node("MoveLabel").text = str(move_limit)
+	$HUD.get_node("LevelLabel").text = str(level)
+	# 클리어
 	clear_board()
 	clear_panel()
 	piece_type = pick_piece()
-	piece_atlas = Vector2i(shapes_full.find(piece_type),0)
+	piece_atlas = Vector2i(shapes_full.find(piece_type), 0)
 	next_piece_type = pick_piece()
-	next_piece_atlas = Vector2i(shapes_full.find(next_piece_type),0)
+	next_piece_atlas = Vector2i(shapes_full.find(next_piece_type), 0)
 	create_piece()
 
 # Called every frame. 'delta' is the elapsed time since the previous frame.
@@ -213,7 +233,7 @@ func pick_piece():
 	return piece
 	
 func create_piece():
-	#reset variables
+	# 변수 초기화
 	steps = [0,0,0]
 	cur_pos = start_pos
 	active_piece = piece_type[rotation_index]
@@ -254,7 +274,7 @@ func move_piece(dir):
 			check_game_over()
 	
 func can_move(dir):
-	#check if there is space to move
+	# 이동할 공간이 있는지 확인
 	var cm = true
 	for i in active_piece:
 		if not is_free(i + cur_pos + dir):
@@ -273,14 +293,21 @@ func is_free(pos):
 	return get_cell_source_id(board_layer, pos) == -1
 
 func land_piece():
-	#remove each segment from the active layer and move to board layer
+	# 각 세그먼트를 활성 레이어에서 제거하고 보드 레이어로 이동
 	for i in active_piece:
 		erase_cell(active_layer, cur_pos + i)
 		set_cell(board_layer, cur_pos+i, tile_id, piece_atlas)
+	move_count += 1  # 블록이 바닥에 닿았을 때 움직임 횟수 증가
+	if move_limit < 0:
+		$HUD.get_node("MoveLabel").text = "무제한"
+	else:
+		$HUD.get_node("MoveLabel").text = str(max(0, move_limit - move_count))  # 남은 움직임 업데이트
+	if move_limit > 0 and move_count >= move_limit:
+		game_over()  # 움직임 제한 초과 시 게임 오버 처리
 
 func clear_panel():
-	for i in range(9, 14) :
-		for j in range(-2, 3) : 
+	for i in range(4, 16) :
+		for j in range(-4, 4) : 
 			erase_cell(active_layer, Vector2i(i, j))
 
 func check_rows():
@@ -292,9 +319,14 @@ func check_rows():
 				count += 1
 		if count == COLS : 
 			shift_row(row)
-			score += REWARD
+			score -= REWARD  # 점수 감소
 			$HUD.get_node("ScoreLabel").text = str(score)
 			speed += ACCEL
+			if score <= 0:
+				level += 1
+				initial_score += 500  # 다음 레벨의 초기 점수 증가
+				start_level()  # 다음 레벨 시작
+				return
 		else:
 			row -= 1
 
@@ -323,3 +355,7 @@ func check_game_over():
 func drop_piece():
 	while can_move(Vector2i.DOWN):  # 아래로 이동할 수 있을 때까지 반복
 		move_piece(Vector2i.DOWN)
+
+func game_over():
+	$HUD.get_node("GameOverLabel").show()
+	game_running = false
