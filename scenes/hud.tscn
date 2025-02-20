@@ -39,20 +39,20 @@ bg_color = Color(0.266387, 0.43281, 0.380049, 1)
 [node name="HUD" type="CanvasLayer"]
 
 [node name="move" type="Label" parent="."]
-offset_left = 19.0
-offset_top = 44.0
-offset_right = 199.0
-offset_bottom = 99.0
+offset_left = 85.0
+offset_top = 150.0
+offset_right = 265.0
+offset_bottom = 205.0
 theme_override_font_sizes/font_size = 40
 text = "MOVE
 "
 vertical_alignment = 1
 
 [node name="score" type="Label" parent="."]
-offset_left = 20.0
-offset_top = 103.0
-offset_right = 247.0
-offset_bottom = 172.0
+offset_left = 86.0
+offset_top = 209.0
+offset_right = 313.0
+offset_bottom = 278.0
 theme_override_font_sizes/font_size = 40
 text = "SCORE"
 vertical_alignment = 1
@@ -67,29 +67,29 @@ text = "LEVEL"
 vertical_alignment = 1
 
 [node name="ScoreLabel" type="Label" parent="."]
-offset_left = 124.0
-offset_top = 111.0
-offset_right = 277.0
-offset_bottom = 194.0
+offset_left = 190.0
+offset_top = 217.0
+offset_right = 343.0
+offset_bottom = 300.0
 theme_override_font_sizes/font_size = 40
 text = "0"
 horizontal_alignment = 1
 
 [node name="MoveLabel" type="Label" parent="."]
-offset_left = 137.0
-offset_top = 46.0
-offset_right = 264.0
-offset_bottom = 115.0
+offset_left = 203.0
+offset_top = 152.0
+offset_right = 330.0
+offset_bottom = 221.0
 theme_override_font_sizes/font_size = 40
 text = "0
 "
 horizontal_alignment = 1
 
 [node name="LevelLabel" type="Label" parent="."]
-offset_left = 135.0
-offset_top = 177.0
-offset_right = 262.0
-offset_bottom = 246.0
+offset_left = 201.0
+offset_top = 283.0
+offset_right = 328.0
+offset_bottom = 352.0
 theme_override_font_sizes/font_size = 40
 text = "0
 "
@@ -114,20 +114,20 @@ process_material = SubResource("ParticleProcessMaterial_g0coc")
 explosiveness = 1.0
 
 [node name="GameOverLabel" type="Label" parent="."]
-offset_left = 429.0
-offset_top = 806.0
-offset_right = 730.0
-offset_bottom = 875.0
+offset_left = 413.0
+offset_top = 970.0
+offset_right = 714.0
+offset_bottom = 1039.0
 theme_override_font_sizes/font_size = 50
 text = "GAME OVER!"
 horizontal_alignment = 1
 vertical_alignment = 1
 
 [node name="PauseButton" type="Button" parent="."]
-offset_left = 431.0
-offset_top = 152.0
-offset_right = 601.0
-offset_bottom = 223.0
+offset_left = 481.0
+offset_top = 270.0
+offset_right = 651.0
+offset_bottom = 341.0
 theme_override_font_sizes/font_size = 28
 theme_override_styles/hover = SubResource("StyleBoxFlat_t2lwt")
 theme_override_styles/pressed = SubResource("StyleBoxFlat_vyd24")
@@ -135,10 +135,10 @@ theme_override_styles/normal = SubResource("StyleBoxFlat_i0jgq")
 text = "중지"
 
 [node name="StartButton" type="Button" parent="."]
-offset_left = 429.0
-offset_top = 55.0
-offset_right = 599.0
-offset_bottom = 126.0
+offset_left = 479.0
+offset_top = 173.0
+offset_right = 649.0
+offset_bottom = 244.0
 theme_override_font_sizes/font_size = 28
 theme_override_styles/hover = SubResource("StyleBoxFlat_t2lwt")
 theme_override_styles/pressed = SubResource("StyleBoxFlat_vyd24")

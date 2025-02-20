@@ -186,6 +186,7 @@ func start_level():
 	score = initial_score
 	speed = 1.0
 	game_running = true
+	is_paused = false
 	steps = [0, 0, 0]  # 0:left 1:right, 2:down
 	move_count = 0  # 움직임 횟수 초기화
 	if level > 1:
