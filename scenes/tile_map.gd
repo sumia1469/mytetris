@@ -109,6 +109,10 @@ func _ready():
 	start_button.connect("pressed", Callable(self, "new_game"))
 	start_button.focus_mode = Control.FOCUS_NONE  # 🔥 Spacebar 입력 차단
 
+	var pause_button = $HUD.get_node("PauseButton")
+	pause_button.connect("pressed", Callable(self, "pause_game"))
+	pause_button.focus_mode = Control.FOCUS_NONE
+	
 	# 터치 이벤트 연결
 	set_process_input(true)
 
@@ -190,6 +194,11 @@ func start_level():
 	# 클리어
 	clear_board()
 	clear_panel()
+	
+	# 레벨이 오를 때 하단에 랜덤 블록 추가
+	if level > 1:
+		add_random_blocks(level - 1)
+
 	piece_type = pick_piece()
 	piece_atlas = Vector2i(shapes_full.find(piece_type), 0)
 	next_piece_type = pick_piece()
@@ -246,7 +255,7 @@ func create_piece():
 	active_piece = piece_type[rotation_index]
 	draw_piece(active_piece, cur_pos, piece_atlas)
 	clear_panel()
-	draw_piece(next_piece_type[0], Vector2i(9,-2), next_piece_atlas)
+	draw_piece(next_piece_type[0], Vector2i(9,-3), next_piece_atlas)
 	update_ghost_piece()
 
 func clear_piece():
@@ -352,7 +361,7 @@ func land_piece():
 
 func clear_panel():
 	for i in range(0, 40) :
-		for j in range(-4, 10) : 
+		for j in range(-4, 40) : 
 			erase_cell(active_layer, Vector2i(i, j))
 
 func check_rows():
@@ -371,8 +380,9 @@ func check_rows():
 				level += 1
 				initial_score += 500  # 다음 레벨의 초기 점수 증가
 				# 레벨업 안내 문자와 폭죽 애니메이션 재생
-				show_level_up_message()
-				play_fireworks()
+				is_paused = true
+				game_running = false
+				await show_level_up_and_fireworks()
 				start_level()  # 다음 레벨 시작
 				return
 		else:
@@ -404,32 +414,44 @@ func drop_piece():
 	while can_move(Vector2i.DOWN):  # 아래로 이동할 수 있을 때까지 반복
 		move_piece(Vector2i.DOWN)
 
-# 레벨업 안내 문자를 표시하는 함수
-func show_level_up_message():
+# 레벨업 안내 문자와 폭죽 애니메이션을 동시에 표시하는 함수
+func show_level_up_and_fireworks():
 	var level_up_label = $HUD.get_node("LevelUpLabel")
+	var fireworks = $HUD.get_node("Fireworks")
+	
+	# 레벨업 안내 문자 표시
 	level_up_label.text = "Level Up!"
 	level_up_label.show()
-	await get_tree().create_timer(2.0).timeout  # 2초 동안 표시
-	level_up_label.hide()
-
-# 폭죽 애니메이션을 재생하는 함수
-func play_fireworks():
-	var fireworks = $HUD.get_node("Fireworks")
+	
+	# 폭죽 애니메이션 재생
 	fireworks.show()
 	fireworks.restart()
-	await get_tree().create_timer(2.0).timeout  # 2초 동안 재생
+	
+	# 2초 동안 대기
+	await get_tree().create_timer(2.0).timeout
+	
+	# 레벨업 안내 문자와 폭죽 애니메이션 숨기기
+	level_up_label.hide()
 	fireworks.hide()
 
 # 게임을 일시 중지하는 함수
 func pause_game():
-	if is_paused:
-		get_tree().paused = false
-		is_paused = false
-		#$HUD.get_node("PauseButton").text = "Pause"
-	else:
-		get_tree().paused = true
-		is_paused = true
-		#$HUD.get_node("PauseButton").text = "Resume"
+    if is_paused:
+        is_paused = false
+        game_running = true
+        $HUD.get_node("PauseButton").text = "중지"
+        Input.set_mouse_mode(Input.MOUSE_MODE_VISIBLE)
+    else:
+        is_paused = true
+        game_running = false
+        $HUD.get_node("PauseButton").text = "돌아가기"
+        Input.set_mouse_mode(Input.MOUSE_MODE_CONFINED)
+
+func add_random_blocks(rows):
+	for row in range(ROWS - rows, ROWS):
+		for col in range(COLS):
+			if randi() % 2 == 0:  # 50% 확률로 블록을 추가
+				set_cell(board_layer, Vector2i(col + 1, row + 1), tile_id, Vector2i(randi() % 7, 0))
 
 func game_over():
 	$HUD.get_node("GameOverLabel").show()

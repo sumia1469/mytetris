@@ -1,12 +1,4 @@
-[gd_scene load_steps=10 format=3 uid="uid://bmxxjkqdjubig"]
-
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_xbkm2"]
-bg_color = Color(1, 1, 1, 0)
-border_width_left = 10
-border_width_top = 10
-border_width_right = 10
-border_width_bottom = 10
-border_color = Color(1, 1, 1, 1)
+[gd_scene load_steps=9 format=3 uid="uid://bmxxjkqdjubig"]
 
 [sub_resource type="Gradient" id="Gradient_opm8b"]
 colors = PackedColorArray(1, 0.804755, 0, 1, 1, 0, 0.00378942, 1)
@@ -46,85 +38,59 @@ bg_color = Color(0.266387, 0.43281, 0.380049, 1)
 
 [node name="HUD" type="CanvasLayer"]
 
-[node name="Panel" type="Panel" parent="."]
-offset_left = 781.0
-offset_top = 29.0
-offset_right = 993.0
-offset_bottom = 221.0
-scale = Vector2(1.15004, 1.15004)
-theme_override_styles/panel = SubResource("StyleBoxFlat_xbkm2")
-
-[node name="Panel2" type="Panel" parent="."]
-offset_left = 388.0
-offset_top = 29.0
-offset_right = 600.0
-offset_bottom = 269.0
-scale = Vector2(1.53946, 0.935322)
-theme_override_styles/panel = SubResource("StyleBoxFlat_xbkm2")
-
-[node name="Panel3" type="Panel" parent="."]
-offset_left = 59.0
-offset_top = 29.0
-offset_right = 271.0
-offset_bottom = 221.0
-theme_override_styles/panel = SubResource("StyleBoxFlat_xbkm2")
-
-[node name="next" type="Label" parent="."]
-offset_left = 781.0
-offset_top = 42.0
-offset_right = 961.0
-offset_bottom = 97.0
-theme_override_font_sizes/font_size = 40
-text = "NEXT"
-horizontal_alignment = 1
-vertical_alignment = 1
-
 [node name="move" type="Label" parent="."]
-offset_left = 59.0
-offset_top = 42.0
-offset_right = 239.0
-offset_bottom = 97.0
+offset_left = 19.0
+offset_top = 44.0
+offset_right = 199.0
+offset_bottom = 99.0
 theme_override_font_sizes/font_size = 40
 text = "MOVE
 "
-horizontal_alignment = 1
 vertical_alignment = 1
 
 [node name="score" type="Label" parent="."]
-offset_left = 429.0
-offset_top = 42.0
-offset_right = 656.0
-offset_bottom = 111.0
+offset_left = 20.0
+offset_top = 103.0
+offset_right = 247.0
+offset_bottom = 172.0
 theme_override_font_sizes/font_size = 40
 text = "SCORE"
-horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="score" type="Label" parent="score"]
+offset_left = 4.0
+offset_top = 70.0
+offset_right = 231.0
+offset_bottom = 139.0
+theme_override_font_sizes/font_size = 40
+text = "LEVEL"
 vertical_alignment = 1
 
 [node name="ScoreLabel" type="Label" parent="."]
-offset_left = 471.0
-offset_top = 138.0
-offset_right = 624.0
-offset_bottom = 221.0
-theme_override_font_sizes/font_size = 60
+offset_left = 124.0
+offset_top = 111.0
+offset_right = 277.0
+offset_bottom = 194.0
+theme_override_font_sizes/font_size = 40
 text = "0"
 horizontal_alignment = 1
 
 [node name="MoveLabel" type="Label" parent="."]
-offset_left = 94.0
-offset_top = 111.0
-offset_right = 221.0
-offset_bottom = 180.0
-theme_override_font_sizes/font_size = 50
+offset_left = 137.0
+offset_top = 46.0
+offset_right = 264.0
+offset_bottom = 115.0
+theme_override_font_sizes/font_size = 40
 text = "0
 "
 horizontal_alignment = 1
 
 [node name="LevelLabel" type="Label" parent="."]
-offset_left = 200.0
-offset_top = 230.0
-offset_right = 327.0
-offset_bottom = 299.0
-theme_override_font_sizes/font_size = 50
+offset_left = 135.0
+offset_top = 177.0
+offset_right = 262.0
+offset_bottom = 246.0
+theme_override_font_sizes/font_size = 40
 text = "0
 "
 horizontal_alignment = 1
@@ -157,11 +123,22 @@ text = "GAME OVER!"
 horizontal_alignment = 1
 vertical_alignment = 1
 
+[node name="PauseButton" type="Button" parent="."]
+offset_left = 431.0
+offset_top = 152.0
+offset_right = 601.0
+offset_bottom = 223.0
+theme_override_font_sizes/font_size = 28
+theme_override_styles/hover = SubResource("StyleBoxFlat_t2lwt")
+theme_override_styles/pressed = SubResource("StyleBoxFlat_vyd24")
+theme_override_styles/normal = SubResource("StyleBoxFlat_i0jgq")
+text = "중지"
+
 [node name="StartButton" type="Button" parent="."]
-offset_left = 59.0
-offset_top = 250.0
-offset_right = 229.0
-offset_bottom = 290.0
+offset_left = 429.0
+offset_top = 55.0
+offset_right = 599.0
+offset_bottom = 126.0
 theme_override_font_sizes/font_size = 28
 theme_override_styles/hover = SubResource("StyleBoxFlat_t2lwt")
 theme_override_styles/pressed = SubResource("StyleBoxFlat_vyd24")
