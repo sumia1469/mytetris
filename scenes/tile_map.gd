@@ -62,7 +62,7 @@ var move_delay = 0.1  # 이동 속도 조절
 var move_timer = 0.0
 
 # 드래그 이동 속도 조절 변수
-var drag_move_delay = 0.05
+var drag_move_delay = 0.1
 var drag_move_timer = 0.0
 
 # 터치와 드래그 이벤트 구분 변수
