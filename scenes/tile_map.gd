@@ -75,6 +75,10 @@ var next_piece_type
 var rotation_index : int = 0
 var active_piece : Array
 
+# 고스트 블록 변수
+var ghost_piece : Array
+var ghost_pos : Vector2i
+
 # 게임 변수
 var score : int
 const REWARD : int = 100
@@ -92,6 +96,7 @@ var next_piece_atlas : Vector2i
 # 레이어 변수
 var board_layer : int = 0
 var active_layer : int = 1
+var ghost_layer : int = 2
 
 # 드래그 방향 추적 변수
 var drag_direction : String = ""
@@ -190,6 +195,10 @@ func start_level():
 	next_piece_atlas = Vector2i(shapes_full.find(next_piece_type), 0)
 	create_piece()
 
+	# 레벨업 안내 문자와 폭죽 애니메이션 재생
+	show_level_up_message()
+	play_fireworks()
+
 # Called every frame. 'delta' is the elapsed time since the previous frame.
 func _process(delta):
 	if game_running:
@@ -240,6 +249,7 @@ func create_piece():
 	draw_piece(active_piece, cur_pos, piece_atlas)
 	clear_panel()
 	draw_piece(next_piece_type[0], Vector2i(9,-2), next_piece_atlas)
+	update_ghost_piece()
 
 func clear_piece():
 	for i in active_piece:
@@ -248,19 +258,39 @@ func clear_piece():
 func draw_piece(piece, pos, atlas):
 	for i in piece:
 		set_cell(active_layer, pos + i, tile_id, atlas)
-		
+
+func draw_ghost_piece(piece, pos, atlas):
+	for i in piece :
+		set_cell(ghost_layer, pos+i, tile_id, atlas)
+
+func clear_ghost_piece():
+	for i in ghost_piece:
+		erase_cell(ghost_layer, ghost_pos + i)
+
+func update_ghost_piece():
+	clear_ghost_piece()
+	ghost_piece = active_piece
+	ghost_pos = cur_pos
+	while can_move_piece(ghost_piece, ghost_pos + Vector2i.DOWN):
+		ghost_pos += Vector2i.DOWN
+	draw_ghost_piece(ghost_piece, ghost_pos, piece_atlas)
+
 func rotate_piece():
 	if can_rotate():
 		clear_piece()
+		clear_ghost_piece()
 		rotation_index = (rotation_index + 1) % 4
 		active_piece = piece_type[rotation_index]
 		draw_piece(active_piece, cur_pos, piece_atlas)
+		update_ghost_piece()
 			
 func move_piece(dir):
 	if can_move(dir):
 		clear_piece()
+		clear_ghost_piece()
 		cur_pos += dir
 		draw_piece(active_piece, cur_pos, piece_atlas)
+		update_ghost_piece()
 	else:
 		if dir == Vector2i.DOWN:
 			land_piece()
@@ -274,20 +304,18 @@ func move_piece(dir):
 			check_game_over()
 	
 func can_move(dir):
+	return can_move_piece(active_piece, cur_pos + dir)
+
+func can_move_piece(piece, pos):
 	# 이동할 공간이 있는지 확인
-	var cm = true
-	for i in active_piece:
-		if not is_free(i + cur_pos + dir):
-			cm = false
-	return cm
+	for i in piece:
+		if not is_free(pos + i):
+			return false
+	return true
 
 func can_rotate():
-	var cr = true
 	var temp_rotation_index = (rotation_index + 1) % 4
-	for i in piece_type[temp_rotation_index]:
-		if not is_free(i + cur_pos):
-			cr = false
-	return cr
+	return can_move_piece(piece_type[temp_rotation_index],cur_pos)
 	
 func is_free(pos):
 	return get_cell_source_id(board_layer, pos) == -1
@@ -307,7 +335,7 @@ func land_piece():
 
 func clear_panel():
 	for i in range(4, 16) :
-		for j in range(-4, 4) : 
+		for j in range(-4, 10) : 
 			erase_cell(active_layer, Vector2i(i, j))
 
 func check_rows():
@@ -355,6 +383,22 @@ func check_game_over():
 func drop_piece():
 	while can_move(Vector2i.DOWN):  # 아래로 이동할 수 있을 때까지 반복
 		move_piece(Vector2i.DOWN)
+
+# 레벨업 안내 문자를 표시하는 함수
+func show_level_up_message():
+    var level_up_label = $HUD.get_node("LevelUpLabel")
+    level_up_label.text = "Level Up!"
+    level_up_label.show()
+    await get_tree().create_timer(2.0).timeout  # 2초 동안 표시
+    level_up_label.hide()
+
+# 폭죽 애니메이션을 재생하는 함수
+func play_fireworks():
+    var fireworks = $HUD.get_node("Fireworks")
+    fireworks.visible = true
+    fireworks.play("explode")
+    await get_tree().create_timer(2.0).timeout  # 2초 동안 재생
+    fireworks.visible = false
 
 func game_over():
 	$HUD.get_node("GameOverLabel").show()
