@@ -1,4 +1,4 @@
-[gd_scene load_steps=5 format=3 uid="uid://bmxxjkqdjubig"]
+[gd_scene load_steps=10 format=3 uid="uid://bmxxjkqdjubig"]
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_xbkm2"]
 bg_color = Color(1, 1, 1, 0)
@@ -7,6 +7,33 @@ border_width_top = 10
 border_width_right = 10
 border_width_bottom = 10
 border_color = Color(1, 1, 1, 1)
+
+[sub_resource type="Gradient" id="Gradient_opm8b"]
+colors = PackedColorArray(1, 0.804755, 0, 1, 1, 0, 0.00378942, 1)
+
+[sub_resource type="GradientTexture1D" id="GradientTexture1D_ggtye"]
+gradient = SubResource("Gradient_opm8b")
+
+[sub_resource type="Curve" id="Curve_noscu"]
+_data = [Vector2(0, 1), 0.0, 0.0, 0, 0, Vector2(1, 0.30554), 0.0, 0.0, 0, 0]
+point_count = 2
+
+[sub_resource type="CurveTexture" id="CurveTexture_p1p83"]
+width = 400
+curve = SubResource("Curve_noscu")
+
+[sub_resource type="ParticleProcessMaterial" id="ParticleProcessMaterial_g0coc"]
+particle_flag_disable_z = true
+spread = 180.0
+initial_velocity_min = 30.0
+initial_velocity_max = 75.0
+gravity = Vector3(0, 98, 0)
+damping_min = 28.0
+damping_max = 28.0
+scale_min = 10.0
+scale_max = 15.0
+scale_curve = SubResource("CurveTexture_p1p83")
+color_ramp = SubResource("GradientTexture1D_ggtye")
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_t2lwt"]
 bg_color = Color(0.387442, 0.710434, 0.776994, 1)
@@ -101,6 +128,24 @@ theme_override_font_sizes/font_size = 50
 text = "0
 "
 horizontal_alignment = 1
+
+[node name="LevelUpLabel" type="Label" parent="."]
+visible = false
+offset_left = 394.0
+offset_top = 880.0
+offset_right = 782.0
+offset_bottom = 963.0
+theme_override_font_sizes/font_size = 60
+text = "LevelUpLabel
+"
+
+[node name="Fireworks" type="GPUParticles2D" parent="."]
+visible = false
+position = Vector2(541, 962)
+scale = Vector2(8.19556, 9.06975)
+amount = 50
+process_material = SubResource("ParticleProcessMaterial_g0coc")
+explosiveness = 1.0
 
 [node name="GameOverLabel" type="Label" parent="."]
 offset_left = 429.0

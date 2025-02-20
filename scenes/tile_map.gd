@@ -87,6 +87,7 @@ var initial_score : int = 500  # 초기 점수
 var move_limit : int = -1  # 움직임 제한 (-1은 무제한)
 var move_count : int = 0  # 현재 움직임 횟수
 var level : int = 1  # 현재 레벨
+var is_paused = false
 
 # 타일맵 변수
 var tile_id : int = 0
@@ -195,9 +196,6 @@ func start_level():
 	next_piece_atlas = Vector2i(shapes_full.find(next_piece_type), 0)
 	create_piece()
 
-	# 레벨업 안내 문자와 폭죽 애니메이션 재생
-	show_level_up_message()
-	play_fireworks()
 
 # Called every frame. 'delta' is the elapsed time since the previous frame.
 func _process(delta):
@@ -315,7 +313,25 @@ func can_move_piece(piece, pos):
 
 func can_rotate():
 	var temp_rotation_index = (rotation_index + 1) % 4
-	return can_move_piece(piece_type[temp_rotation_index],cur_pos)
+	var temp_piece = piece_type[temp_rotation_index]
+
+	# 기본 위치에서 회전 가능 여부 확인
+	if can_move_piece(temp_piece, cur_pos):
+		return true
+
+	# 벽 킥을 적용하여 회전 가능 여부 확인
+	var wall_kick_offsets = [
+		Vector2(1,0), #오른쪽으로 한칸이동
+		Vector2i(-1,0) #왼쪽으로 한칸이동
+		Vector2i(0,1) #위로 한칸이동
+		Vector2i(0,-1) #아래로 한칸이동
+	]	
+	for offset in wall_kick_offsets:
+		if can_move_piece(temp_piece, cur_pos + offset):
+			cur_pos += offset
+			retrun true
+	
+	return false
 	
 func is_free(pos):
 	return get_cell_source_id(board_layer, pos) == -1
@@ -334,7 +350,7 @@ func land_piece():
 		game_over()  # 움직임 제한 초과 시 게임 오버 처리
 
 func clear_panel():
-	for i in range(4, 16) :
+	for i in range(0, 40) :
 		for j in range(-4, 10) : 
 			erase_cell(active_layer, Vector2i(i, j))
 
@@ -353,6 +369,9 @@ func check_rows():
 			if score <= 0:
 				level += 1
 				initial_score += 500  # 다음 레벨의 초기 점수 증가
+				# 레벨업 안내 문자와 폭죽 애니메이션 재생
+				show_level_up_message()
+				play_fireworks()
 				start_level()  # 다음 레벨 시작
 				return
 		else:
@@ -386,19 +405,30 @@ func drop_piece():
 
 # 레벨업 안내 문자를 표시하는 함수
 func show_level_up_message():
-    var level_up_label = $HUD.get_node("LevelUpLabel")
-    level_up_label.text = "Level Up!"
-    level_up_label.show()
-    await get_tree().create_timer(2.0).timeout  # 2초 동안 표시
-    level_up_label.hide()
+	var level_up_label = $HUD.get_node("LevelUpLabel")
+	level_up_label.text = "Level Up!"
+	level_up_label.show()
+	await get_tree().create_timer(2.0).timeout  # 2초 동안 표시
+	level_up_label.hide()
 
 # 폭죽 애니메이션을 재생하는 함수
 func play_fireworks():
-    var fireworks = $HUD.get_node("Fireworks")
-    fireworks.visible = true
-    fireworks.play("explode")
-    await get_tree().create_timer(2.0).timeout  # 2초 동안 재생
-    fireworks.visible = false
+	var fireworks = $HUD.get_node("Fireworks")
+	fireworks.show()
+	fireworks.restart()
+	await get_tree().create_timer(2.0).timeout  # 2초 동안 재생
+	fireworks.hide()
+
+# 게임을 일시 중지하는 함수
+func pause_game():
+	if is_paused:
+		get_tree().paused = false
+		is_paused = false
+		#$HUD.get_node("PauseButton").text = "Pause"
+	else:
+		get_tree().paused = true
+		is_paused = true
+		#$HUD.get_node("PauseButton").text = "Resume"
 
 func game_over():
 	$HUD.get_node("GameOverLabel").show()
