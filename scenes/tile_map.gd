@@ -118,6 +118,14 @@ func _ready():
 
 # 터치 이벤트 처리
 func _input(event):
+	if is_paused :
+		return 
+	if event is InputEventScreenTouch or event is InputEventScreenDrag:
+		var pause_button = $HUD.get_node("PauseButton")
+		var start_button = $HUD.get_node("StartButton")
+		if pause_button.get_global_rect().has_point(event.position) or start_button.get_global_rect().has_point(event.position):
+			return 
+			
 	if event is InputEventScreenTouch:
 		if event.pressed:
 			print("터치 이벤트 감지됨")
@@ -436,16 +444,14 @@ func show_level_up_and_fireworks():
 
 # 게임을 일시 중지하는 함수
 func pause_game():
-    if is_paused:
-        is_paused = false
-        game_running = true
-        $HUD.get_node("PauseButton").text = "중지"
-        Input.set_mouse_mode(Input.MOUSE_MODE_VISIBLE)
-    else:
-        is_paused = true
-        game_running = false
-        $HUD.get_node("PauseButton").text = "돌아가기"
-        Input.set_mouse_mode(Input.MOUSE_MODE_CONFINED)
+	if is_paused:
+		is_paused = false
+		game_running = true
+		$HUD.get_node("PauseButton").text = "중지"
+	else:
+		is_paused = true
+		game_running = false
+		$HUD.get_node("PauseButton").text = "돌아가기"
 
 func add_random_blocks(rows):
 	for row in range(ROWS - rows, ROWS):
