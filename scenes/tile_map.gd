@@ -321,15 +321,16 @@ func can_rotate():
 
 	# 벽 킥을 적용하여 회전 가능 여부 확인
 	var wall_kick_offsets = [
-		Vector2(1,0), #오른쪽으로 한칸이동
-		Vector2i(-1,0) #왼쪽으로 한칸이동
-		Vector2i(0,1) #위로 한칸이동
-		Vector2i(0,-1) #아래로 한칸이동
+		Vector2i(1,0), #오른쪽으로 한칸이동
+		Vector2i(-1,0), #왼쪽으로 한칸이동
+		Vector2i(0,1), #위로 한칸이동
+		Vector2i(0,-1), #아래로 한칸이동
 	]	
 	for offset in wall_kick_offsets:
 		if can_move_piece(temp_piece, cur_pos + offset):
+			clear_piece()
 			cur_pos += offset
-			retrun true
+			return true
 	
 	return false
 	
