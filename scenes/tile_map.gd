@@ -130,7 +130,7 @@ func _ready():
 
 # 터치 이벤트 처리
 func _input(event):
-	if is_paused :
+	if is_paused:
 		return 
 	if event is InputEventScreenTouch or event is InputEventScreenDrag:
 		var pause_button = $HUD.get_node("PauseButton")
@@ -157,11 +157,15 @@ func _input(event):
 
 # 터치 위치에 따라 조작
 func handler_touch(position):
+	if is_paused:
+		return
 	print("터치 위치: ", position)
 	rotate_piece()
 
 # 드래그 위치에 따라 조작
 func handler_drag(relative):
+	if is_paused:
+		return
 	print("드래그 상대 위치: ", relative)
 	if drag_direction == "":
 		if abs(relative.y) > abs(relative.x):
@@ -186,6 +190,7 @@ func handler_drag(relative):
 				move_piece(Vector2i.RIGHT)
 			drag_move_timer = 0.0
 
+
 # 새로운 게임 시작
 func new_game():
 	# 변수 초기화
@@ -195,7 +200,6 @@ func new_game():
 	move_limit = -1
 	start_level()
 
-# 게임 시작 시 타이머 초기화
 func start_level():
 	# 변수 초기화
 	score = initial_score
@@ -206,19 +210,9 @@ func start_level():
 	$HUD.get_node("PauseButton").show()  # PauseButton 활성화
 	steps = [0, 0, 0]  # 0:left 1:right, 2:down
 	move_count = 0  # 움직임 횟수 초기화
-	time_left = 10 * 60  # 10분 (초 단위)
-	# if level > 1:
-	#     move_limit = 200 - (level - 1) * 5  # 레벨에 따라 움직임 제한 설정
-	# else:
-	#     move_limit = -1  # 첫 번째 레벨은 무제한 이동
 	$HUD.get_node("GameOverLabel").hide()
 	$HUD.get_node("ScoreLabel").text = str(score)
-	# if move_limit < 0:
-	#     $HUD.get_node("MoveLabel").text = "무제한"
-	# else:
-	#     $HUD.get_node("MoveLabel").text = str(move_limit)
 	$HUD.get_node("LevelLabel").text = str(level)
-	# 클리어
 	clear_board()
 	clear_panel()
 	
@@ -232,6 +226,18 @@ func start_level():
 	next_piece_atlas = Vector2i(shapes_full.find(next_piece_type), 0)
 	create_piece()
 	BgMusic.resume_music(BgMusic.play2_music)
+
+	# 레벨업 애니메이션 재생
+	if level > 1:
+		is_paused = true
+		game_running = false
+		BgMusic.pause_music(BgMusic.play2_music)
+		BgMusic.play_levelup_sound()
+		await show_level_up_and_fireworks()
+		await get_tree().create_timer(3.0).timeout
+		is_paused = false
+		game_running = true
+		BgMusic.resume_music(BgMusic.play2_music)
 
 
 # 타이머 업데이트 및 표시
@@ -321,6 +327,8 @@ func update_ghost_piece():
 	draw_ghost_piece(ghost_piece, ghost_pos, piece_atlas)
 
 func rotate_piece():
+	if is_paused:
+		return
 	if can_rotate():
 		clear_piece()
 		clear_ghost_piece()
@@ -419,13 +427,6 @@ func check_rows():
 			if score <= 0:
 				level += 1
 				initial_score += 5  # 다음 레벨의 초기 점수 증가
-				# 레벨업 안내 문자와 폭죽 애니메이션 재생
-				is_paused = true
-				game_running = false
-				BgMusic.pause_music(BgMusic.play2_music)
-				BgMusic.play_levelup_sound()
-				await show_level_up_and_fireworks()
-				await get_tree().create_timer(3.0).timeout
 				start_level()  # 다음 레벨 시작
 				return
 		else:
@@ -478,19 +479,25 @@ func show_level_up_and_fireworks():
 
 # 게임을 일시 중지하는 함수
 func pause_game():
-	if is_game_over:
-		return  
+    if is_game_over:
+        return  
 
-	if is_paused:
-		is_paused = false
-		game_running = true
-		$HUD.get_node("PauseButton").text = "중지"
-		BgMusic.resume_music(BgMusic.play2_music)
-	else:
-		is_paused = true
-		game_running = false
-		$HUD.get_node("PauseButton").text = "돌아가기"
-		BgMusic.pause_music(BgMusic.play2_music)
+    # 입력을 비활성화하여 일시 중지 상태 변경 중 입력을 처리하지 않도록 함
+    set_process_input(false)
+
+    if is_paused:
+        is_paused = false
+        game_running = true
+        $HUD.get_node("PauseButton").text = "중지"
+        BgMusic.resume_music(BgMusic.play2_music)
+    else:
+        is_paused = true
+        game_running = false
+        $HUD.get_node("PauseButton").text = "돌아가기"
+        BgMusic.pause_music(BgMusic.play2_music)
+
+    # 입력을 다시 활성화
+    set_process_input(true)
 
 func add_random_blocks(rows):
 	for row in range(ROWS - rows, ROWS):
