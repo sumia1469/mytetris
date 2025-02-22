@@ -85,9 +85,9 @@ var ghost_pos : Vector2i
 
 # 게임 변수
 var score : int
-const REWARD : int = 100
+const REWARD : int = 1
 var game_running : bool
-var initial_score : int = 500  # 초기 점수
+var initial_score : int = 5  # 초기 점수
 var move_limit : int = -1  # 움직임 제한 (-1은 무제한)
 var move_count : int = 0  # 현재 움직임 횟수
 var level : int = 1  # 현재 레벨
@@ -184,7 +184,7 @@ func handler_drag(relative):
 func new_game():
 	# 변수 초기화
 	level = 1
-	initial_score = 500
+	initial_score = 5
 	move_limit = -1
 	start_level()
 
@@ -221,6 +221,7 @@ func start_level():
 	next_piece_type = pick_piece()
 	next_piece_atlas = Vector2i(shapes_full.find(next_piece_type), 0)
 	create_piece()
+	BgMusic.resume_music(BgMusic.play2_music)
 
 
 # Called every frame. 'delta' is the elapsed time since the previous frame.
@@ -397,11 +398,14 @@ func check_rows():
 			speed += ACCEL
 			if score <= 0:
 				level += 1
-				initial_score += 500  # 다음 레벨의 초기 점수 증가
+				initial_score += 5  # 다음 레벨의 초기 점수 증가
 				# 레벨업 안내 문자와 폭죽 애니메이션 재생
 				is_paused = true
 				game_running = false
+				BgMusic.pause_music(BgMusic.play2_music)
+				BgMusic.play_levelup_sound()
 				await show_level_up_and_fireworks()
+				await get_tree().create_timer(3.0).timeout
 				start_level()  # 다음 레벨 시작
 				return
 		else:
@@ -459,12 +463,12 @@ func pause_game():
 		is_paused = false
 		game_running = true
 		$HUD.get_node("PauseButton").text = "중지"
-		BgMusic.pause_music()
+		BgMusic.resume_music(BgMusic.play2_music)
 	else:
 		is_paused = true
 		game_running = false
 		$HUD.get_node("PauseButton").text = "돌아가기"
-		BgMusic.pause_music()
+		BgMusic.pause_music(BgMusic.play2_music)
 
 func add_random_blocks(rows):
 	for row in range(ROWS - rows, ROWS):
@@ -475,3 +479,5 @@ func add_random_blocks(rows):
 func game_over():
 	$HUD.get_node("GameOverLabel").show()
 	game_running = false
+	BgMusic.pause_music(BgMusic.play2_music)
+	BgMusic.play_loss_effect_sound()

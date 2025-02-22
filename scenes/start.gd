@@ -17,11 +17,11 @@ func _on_game_start_pressed() -> void:
 	await $AnimationPlayer.animation_finished
 	$AnimationPlayer.play("Start/FadeOut")
 	await $AnimationPlayer.animation_finished
-	BgMusic.stop_music_intro()
+	BgMusic.stop_music(BgMusic.intro_music)
 	get_tree().change_scene_to_file("res://scenes/tile_map.tscn")
 
 func _on_options_pressed() -> void:
 	$AnimationPlayer.play("Start/ButtonEffect")
 	await $AnimationPlayer.animation_finished
-	BgMusic.stop_music_intro()
+	BgMusic.stop_music(BgMusic.intro_music)
 	pass # Replace with function body.

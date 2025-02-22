@@ -54,7 +54,7 @@ offset_top = 53.1746
 offset_right = 202.222
 offset_bottom = 108.175
 theme_override_font_sizes/font_size = 40
-text = "MOVE
+text = "움직임
 "
 vertical_alignment = 1
 
@@ -64,17 +64,16 @@ offset_top = 112.175
 offset_right = 250.222
 offset_bottom = 181.175
 theme_override_font_sizes/font_size = 40
-text = "SCORE"
+text = "남은블록"
 vertical_alignment = 1
 
-[node name="score" type="Label" parent="score"]
-layout_mode = 0
-offset_left = 4.0
-offset_top = 70.0
-offset_right = 231.0
-offset_bottom = 139.0
+[node name="score2" type="Label" parent="."]
+offset_left = 27.2222
+offset_top = 182.175
+offset_right = 254.222
+offset_bottom = 251.175
 theme_override_font_sizes/font_size = 40
-text = "LEVEL"
+text = "레벨"
 vertical_alignment = 1
 
 [node name="ScoreLabel" type="Label" parent="."]
