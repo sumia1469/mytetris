@@ -68,6 +68,10 @@ var drag_move_timer = 0.0
 # 터치와 드래그 이벤트 구분 변수
 var is_dragging = false
 var touch_start_position = Vector2()
+var last_touch_time = 0.0
+var touch_delay = 0.5
+var last_drag_time = 0.0
+var drag_delay = 0.1
 
 # 게임 조각 변수
 var piece_type
@@ -159,7 +163,9 @@ func handler_drag(relative):
 
 	if drag_direction == "down":
 		if relative.y > 50:  # 강하게 드래그 시 바로 내림
-			drop_piece()
+			if Time.get_ticks_msec() - last_drag_time > drag_delay * 1000:
+				drop_piece()
+				last_drag_time = Time.get_ticks_msec()
 		else:  # 약하게 드래그 시 빠르게 내림
 			if drag_move_timer >= drag_move_delay:
 				move_piece(Vector2i.DOWN)
