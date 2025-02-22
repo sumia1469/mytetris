@@ -94,7 +94,7 @@ func effect_block3_play():
 	play_fx(block3_effect)   
 
 func effect_block4_play():
-	play_fx(block4_effect)
+	play_fx(block4_effect, 10.0)
 
 func play_levelup_sound():
 	play_fx(levelup_sound, 0.0)  # levelupSound 재생 함수 추가
