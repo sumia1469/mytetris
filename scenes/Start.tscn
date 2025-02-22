@@ -1,4 +1,4 @@
-[gd_scene load_steps=9 format=3 uid="uid://cwd1jm6cd2ow0"]
+[gd_scene load_steps=10 format=3 uid="uid://cwd1jm6cd2ow0"]
 
 [ext_resource type="Script" path="res://scenes/start.gd" id="1_6y68d"]
 [ext_resource type="AudioStream" uid="uid://b5hp4hy1v6aj1" path="res://asset/buttonEffect.mp3" id="3_c6dvh"]
@@ -18,10 +18,52 @@ tracks/0/keys = {
 "update": 0,
 "values": [Color(0, 0, 0, 0)]
 }
+tracks/1/type = "value"
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/path = NodePath("AudioStreamPlayer:stream")
+tracks/1/interp = 1
+tracks/1/loop_wrap = true
+tracks/1/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 1,
+"values": [ExtResource("3_c6dvh")]
+}
 
 [sub_resource type="AnimationLibrary" id="AnimationLibrary_cdbx7"]
 _data = {
 "RESET": SubResource("Animation_jdp16")
+}
+
+[sub_resource type="Animation" id="Animation_0irix"]
+length = 0.89
+tracks/0/type = "audio"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("AudioStreamPlayer")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"clips": [{
+"end_offset": 0.0,
+"start_offset": 0.22,
+"stream": ExtResource("3_c6dvh")
+}],
+"times": PackedFloat32Array(0.0666667)
+}
+tracks/0/use_blend = true
+tracks/1/type = "value"
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/path = NodePath("AudioStreamPlayer:stream")
+tracks/1/interp = 1
+tracks/1/loop_wrap = true
+tracks/1/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 1,
+"values": [ExtResource("3_c6dvh")]
 }
 
 [sub_resource type="Animation" id="Animation_grcb7"]
@@ -39,28 +81,26 @@ tracks/0/keys = {
 "values": [Color(0, 0, 0, 1), Color(0, 0, 0, 0)]
 }
 
-[sub_resource type="Animation" id="Animation_0irix"]
-length = 0.89
-tracks/0/type = "audio"
+[sub_resource type="Animation" id="Animation_mfyra"]
+length = 2.0
+tracks/0/type = "value"
 tracks/0/imported = false
 tracks/0/enabled = true
-tracks/0/path = NodePath("AudioStreamPlayer")
+tracks/0/path = NodePath("StartFadeIn:color")
 tracks/0/interp = 1
 tracks/0/loop_wrap = true
 tracks/0/keys = {
-"clips": [{
-"end_offset": 0.0,
-"start_offset": 0.22,
-"stream": ExtResource("3_c6dvh")
-}],
-"times": PackedFloat32Array(0.0333333)
+"times": PackedFloat32Array(0, 2),
+"transitions": PackedFloat32Array(1, 1),
+"update": 0,
+"values": [Color(0, 0, 0, 0), Color(0, 0, 0, 1)]
 }
-tracks/0/use_blend = true
 
 [sub_resource type="AnimationLibrary" id="AnimationLibrary_ms8ys"]
 _data = {
 "ButtonEffect": SubResource("Animation_0irix"),
-"FadeIn": SubResource("Animation_grcb7")
+"FadeIn": SubResource("Animation_grcb7"),
+"FadeOut": SubResource("Animation_mfyra")
 }
 
 [node name="Start" type="Node2D"]
@@ -90,6 +130,16 @@ offset_bottom = 1241.0
 scale = Vector2(4.56955, 5.61975)
 text = "Options"
 
+[node name="AudioStreamPlayer" type="AudioStreamPlayer" parent="."]
+stream = ExtResource("3_c6dvh")
+volume_db = 3.377
+
+[node name="AnimationPlayer" type="AnimationPlayer" parent="."]
+libraries = {
+"": SubResource("AnimationLibrary_cdbx7"),
+"Start": SubResource("AnimationLibrary_ms8ys")
+}
+
 [node name="StartFadeIn" type="ColorRect" parent="."]
 offset_left = -366.0
 offset_top = -218.0
@@ -97,15 +147,6 @@ offset_right = -326.0
 offset_bottom = -178.0
 scale = Vector2(58.2151, 66.0238)
 color = Color(0, 0, 0, 0)
-
-[node name="AudioStreamPlayer" type="AudioStreamPlayer" parent="."]
-volume_db = 9.86
-
-[node name="AnimationPlayer" type="AnimationPlayer" parent="."]
-libraries = {
-"": SubResource("AnimationLibrary_cdbx7"),
-"Start": SubResource("AnimationLibrary_ms8ys")
-}
 
 [connection signal="pressed" from="GameStart" to="." method="_on_game_start_pressed"]
 [connection signal="pressed" from="Options" to="." method="_on_options_pressed"]
