@@ -3,43 +3,59 @@ extends Node
 const intro_music = preload("res://asset/introBg.ogg")
 const play_music = preload("res://asset/play.ogg")
 const play2_music = preload("res://asset/play2.ogg")
+const block_effect = preload("res://asset/block1.ogg")
+const block2_effect = preload("res://asset/block2.ogg")
+const block3_effect = preload("res://asset/block3.ogg")
+const block4_effect = preload("res://asset/block4.ogg")
 
-var music_player: AudioStreamPlayer
+var music_players = []
 
 func _ready():
-	music_player = AudioStreamPlayer.new()
-	add_child(music_player)
+	# 초기화 시 음악 플레이어를 생성하여 리스트에 추가
+	for i in range(4):
+		var player = AudioStreamPlayer.new()
+		add_child(player)
+		music_players.append(player)
 	# play_music_intro()
 
-func _play_music(music: AudioStream, volume = 0.0):
-	if music_player.stream == music:
-		return
-	var stream = music.duplicate()  # 스트림을 복제하여 loop 설정
-	stream.loop = true  # 루프 설정
-	music_player.stream = stream
-	music_player.volume_db = volume
-	music_player.play()
+func _play_music(music: AudioStream, loop=false, volume = 0.0):
+	var player = AudioStreamPlayer.new()
+	add_child(player)
+	player.stream = music
+	player.volume_db = volume
+	player.play()
+	player.stream.loop = loop  # 루프 설정
+	music_players.append(player)
 
 func play_music_intro():
-	_play_music(intro_music)
+	_play_music(intro_music, true)
 	
 func play_music_play():
-	_play_music(play2_music)    
+	_play_music(play2_music, true)    
 
 func stop_music_intro():
-	music_player.stop()
+	for player in music_players:
+		if player.stream == intro_music:
+			player.stop()
+			remove_child(player)
+			music_players.erase(player)
+
+func stop_all_music():
+	for player in music_players:
+		player.stop()
+		remove_child(player)
+	music_players.clear()
 
 func pause_music():
-	if music_player.playing:
-		music_player.playing = false  # 일시 중지
-	else:
-		music_player.playing = true  # 재개
+	for player in music_players:
+		if player.playing:
+			player.playing = false  # 일시 중지
+		else:
+			player.playing = true  # 재개
 
 func play_fx(stream: AudioStream, volume = 0.0):
 	var fx_player = AudioStreamPlayer.new()
-	var fx_stream = stream.duplicate()  # 스트림을 복제하여 loop 설정
-	fx_stream.loop = true  # 루프 설정
-	fx_player.stream = fx_stream
+	fx_player.stream = stream
 	fx_player.name = "FX_PLAYER"
 	fx_player.volume_db = volume
 	add_child(fx_player)
@@ -47,3 +63,15 @@ func play_fx(stream: AudioStream, volume = 0.0):
 
 	await fx_player.finished
 	fx_player.queue_free()
+
+func effect_block_play():
+	play_fx(block_effect)   
+
+func effect_block2_play():
+	play_fx(block2_effect)   
+
+func effect_block3_play():
+	play_fx(block3_effect)   
+
+func effect_block4_play():
+	play_fx(block4_effect)

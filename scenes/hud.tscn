@@ -108,10 +108,10 @@ horizontal_alignment = 1
 
 [node name="LevelUpLabel" type="Label" parent="."]
 visible = false
-offset_left = 166.667
-offset_top = 921.429
-offset_right = 684.667
-offset_bottom = 1031.43
+offset_left = 226.984
+offset_top = 916.667
+offset_right = 744.984
+offset_bottom = 1026.67
 theme_override_font_sizes/font_size = 80
 text = "LevelUpLabel
 "

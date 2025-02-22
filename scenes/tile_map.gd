@@ -326,6 +326,7 @@ func move_piece(dir):
 			clear_panel()
 			create_piece()
 			check_game_over()
+			BgMusic.effect_block4_play()
 	
 func can_move(dir):
 	return can_move_piece(active_piece, cur_pos + dir)
@@ -391,6 +392,7 @@ func check_rows():
 		if count == COLS : 
 			shift_row(row)
 			score -= REWARD  # 점수 감소
+			BgMusic.effect_block2_play()
 			$HUD.get_node("ScoreLabel").text = str(score)
 			speed += ACCEL
 			if score <= 0:
