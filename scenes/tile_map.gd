@@ -111,19 +111,19 @@ var time_left = 10 * 60  # 10분 (초 단위)
 
 # Called when the node enters the scene tree for the first time.
 func _ready():
-	BgMusic.play_music_play()
-	#game satar
-	new_game()
-	var start_button = $HUD.get_node("StartButton")
-	start_button.connect("pressed", Callable(self, "new_game"))
-	start_button.focus_mode = Control.FOCUS_NONE  # 🔥 Spacebar 입력 차단
+    BgMusic.play_music_play()
+    # game start
+    new_game()
+    var start_button = $HUD.get_node("StartButton")
+    start_button.connect("pressed", Callable(self, "new_game"))
+    start_button.focus_mode = Control.FOCUS_NONE  # 🔥 Spacebar 입력 차단
 
-	var pause_button = $HUD.get_node("PauseButton")
-	pause_button.connect("pressed", Callable(self, "pause_game"))
-	pause_button.focus_mode = Control.FOCUS_NONE
-	
-	# 터치 이벤트 연결
-	set_process_input(true)
+    var pause_button = $HUD.get_node("PauseButton")
+    pause_button.connect("pressed", Callable(self, "pause_game"))
+    pause_button.focus_mode = Control.FOCUS_NONE
+    
+    # 터치 이벤트 연결
+    set_process_input(true)
 
 # 터치 이벤트 처리
 func _input(event):
@@ -185,11 +185,13 @@ func handler_drag(relative):
 
 # 새로운 게임 시작
 func new_game():
-	# 변수 초기화
-	level = 1
-	initial_score = 5
-	move_limit = -1
-	start_level()
+    if game_running:
+        return  # 게임이 이미 실행 중인 경우 함수 종료
+    # 변수 초기화
+    level = 1
+    initial_score = 5
+    move_limit = -1
+    start_level()
 
 # 게임 시작 시 타이머 초기화
 func start_level():
