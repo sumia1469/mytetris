@@ -479,25 +479,25 @@ func show_level_up_and_fireworks():
 
 # 게임을 일시 중지하는 함수
 func pause_game():
-    if is_game_over:
-        return  
+	if is_game_over:
+		return  
 
-    # 입력을 비활성화하여 일시 중지 상태 변경 중 입력을 처리하지 않도록 함
-    set_process_input(false)
+	# 입력을 비활성화하여 일시 중지 상태 변경 중 입력을 처리하지 않도록 함
+	set_process_input(false)
 
-    if is_paused:
-        is_paused = false
-        game_running = true
-        $HUD.get_node("PauseButton").text = "중지"
-        BgMusic.resume_music(BgMusic.play2_music)
-    else:
-        is_paused = true
-        game_running = false
-        $HUD.get_node("PauseButton").text = "돌아가기"
-        BgMusic.pause_music(BgMusic.play2_music)
+	if is_paused:
+		is_paused = false
+		game_running = true
+		$HUD.get_node("PauseButton").text = "중지"
+		BgMusic.resume_music(BgMusic.play2_music)
+	else:
+		is_paused = true
+		game_running = false
+		$HUD.get_node("PauseButton").text = "돌아가기"
+		BgMusic.pause_music(BgMusic.play2_music)
 
-    # 입력을 다시 활성화
-    set_process_input(true)
+	# 입력을 다시 활성화
+	set_process_input(true)
 
 func add_random_blocks(rows):
 	for row in range(ROWS - rows, ROWS):
