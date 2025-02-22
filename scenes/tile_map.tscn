@@ -24,7 +24,6 @@ sources/0 = SubResource("TileSetAtlasSource_klt7w")
 scale = Vector2(1.3, 1.3)
 
 [node name="TileMap" type="TileMap" parent="."]
-visible = false
 position = Vector2(56.9231, 389.231)
 scale = Vector2(2.27675, 2.12814)
 tile_set = SubResource("TileSet_j85fv")
@@ -38,6 +37,5 @@ layer_2/modulate = Color(0, 0, 0, 0.160784)
 script = ExtResource("2_kcna3")
 
 [node name="HUD" parent="TileMap" instance=ExtResource("3_fqcj4")]
-visible = false
 scale = Vector2(1.2, 1.2)
 transform = Transform2D(1.2, 0, 0, 1.2, 0, 0)
