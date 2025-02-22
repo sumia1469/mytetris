@@ -108,6 +108,8 @@ var drag_direction : String = ""
 
 # Called when the node enters the scene tree for the first time.
 func _ready():
+	BgMusic.play_music_play()
+	#game satar
 	new_game()
 	var start_button = $HUD.get_node("StartButton")
 	start_button.connect("pressed", Callable(self, "new_game"))
@@ -270,7 +272,7 @@ func create_piece():
 	active_piece = piece_type[rotation_index]
 	draw_piece(active_piece, cur_pos, piece_atlas)
 	clear_panel()
-	draw_piece(next_piece_type[0], Vector2i(9,-3), next_piece_atlas)
+	draw_piece(next_piece_type[0], Vector2i(8,-3), next_piece_atlas)
 	update_ghost_piece()
 
 func clear_piece():
@@ -455,10 +457,12 @@ func pause_game():
 		is_paused = false
 		game_running = true
 		$HUD.get_node("PauseButton").text = "중지"
+		BgMusic.pause_music()
 	else:
 		is_paused = true
 		game_running = false
 		$HUD.get_node("PauseButton").text = "돌아가기"
+		BgMusic.pause_music()
 
 func add_random_blocks(rows):
 	for row in range(ROWS - rows, ROWS):

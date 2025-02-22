@@ -21,9 +21,10 @@ BgMusic="*res://scenes/bg_music.tscn"
 
 [display]
 
-window/size/viewport_width=1080
-window/size/viewport_height=1920
-window/stretch/mode="viewport"
+window/size/viewport_width=1170
+window/size/viewport_height=2532
+window/stretch/mode="canvas_items"
+window/stretch/aspect="expand"
 
 [input_devices]
 

@@ -1,8 +1,10 @@
-[gd_scene load_steps=10 format=3 uid="uid://cwd1jm6cd2ow0"]
+[gd_scene load_steps=12 format=3 uid="uid://cwd1jm6cd2ow0"]
 
 [ext_resource type="Script" path="res://scenes/start.gd" id="1_6y68d"]
 [ext_resource type="AudioStream" uid="uid://b5hp4hy1v6aj1" path="res://asset/buttonEffect.mp3" id="3_c6dvh"]
+[ext_resource type="Texture2D" uid="uid://bpmvh3h5qaqh2" path="res://asset/Blocks.png" id="4_3ethx"]
 [ext_resource type="VideoStream" path="res://asset/loopbg.ogv" id="4_ua1cn"]
+[ext_resource type="Texture2D" uid="uid://c8nxk8t8nskfo" path="res://asset/Retro.png" id="5_4hiuq"]
 
 [sub_resource type="Animation" id="Animation_jdp16"]
 length = 0.001
@@ -107,27 +109,28 @@ _data = {
 script = ExtResource("1_6y68d")
 
 [node name="VideoStreamPlayer" type="VideoStreamPlayer" parent="."]
-offset_right = 40.0
-offset_bottom = 40.0
-scale = Vector2(1.27429, 1.15181)
+offset_left = -3.0
+offset_right = 1167.0
+offset_bottom = 2532.0
 stream = ExtResource("4_ua1cn")
 autoplay = true
+expand = true
 loop = true
 
 [node name="GameStart" type="Button" parent="."]
-offset_left = 126.0
-offset_top = 1220.0
-offset_right = 217.0
-offset_bottom = 1251.0
-scale = Vector2(4.27162, 5.54428)
+offset_left = 330.0
+offset_top = 1712.0
+offset_right = 810.0
+offset_bottom = 1912.0
+theme_override_font_sizes/font_size = 80
 text = "GameStart"
 
 [node name="Options" type="Button" parent="."]
-offset_left = 650.0
-offset_top = 1210.0
-offset_right = 720.0
-offset_bottom = 1241.0
-scale = Vector2(4.56955, 5.61975)
+offset_left = 325.0
+offset_top = 2008.0
+offset_right = 805.0
+offset_bottom = 2208.0
+theme_override_font_sizes/font_size = 80
 text = "Options"
 
 [node name="AudioStreamPlayer" type="AudioStreamPlayer" parent="."]
@@ -141,12 +144,20 @@ libraries = {
 }
 
 [node name="StartFadeIn" type="ColorRect" parent="."]
-offset_left = -366.0
-offset_top = -218.0
-offset_right = -326.0
-offset_bottom = -178.0
-scale = Vector2(58.2151, 66.0238)
+offset_right = 1170.0
+offset_bottom = 2532.0
+scale = Vector2(0.995701, 1.00393)
 color = Color(0, 0, 0, 0)
+
+[node name="Blocks" type="Sprite2D" parent="."]
+position = Vector2(605.202, 957.713)
+scale = Vector2(2.28003, 1.82325)
+texture = ExtResource("4_3ethx")
+
+[node name="Retro" type="Sprite2D" parent="."]
+position = Vector2(334.202, 823.713)
+scale = Vector2(1.77254, 1.77254)
+texture = ExtResource("5_4hiuq")
 
 [connection signal="pressed" from="GameStart" to="." method="_on_game_start_pressed"]
 [connection signal="pressed" from="Options" to="." method="_on_options_pressed"]

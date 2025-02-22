@@ -5,7 +5,7 @@ extends Node2D
 func _ready() -> void:
 	BgMusic.play_music_intro()
 	$AnimationPlayer.play("Start/FadeIn")
-	await $AnimationPlayer.animation_finished
+	await get_tree().create_timer(1.0).timeout
 	$StartFadeIn.hide()
 
 # Called every frame. 'delta' is the elapsed time since the previous frame.
