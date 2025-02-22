@@ -58,7 +58,7 @@ const start_pos := Vector2i(5,1)
 var cur_pos:Vector2i
 var speed : float
 const ACCEL : float = 0.1
-var move_delay = 0.0.5  # 이동 속도 조절
+var move_delay = 0.08  # 이동 속도 조절
 var move_timer = 0.0
 
 # 드래그 이동 속도 조절 변수
@@ -109,21 +109,24 @@ var drag_direction : String = ""
 # 타이머 변수 초기화
 var time_left = 10 * 60  # 10분 (초 단위)
 
+# 게임오버 상태 변수
+var is_game_over = false
+
 # Called when the node enters the scene tree for the first time.
 func _ready():
-    BgMusic.play_music_play()
-    # game start
-    new_game()
-    var start_button = $HUD.get_node("StartButton")
-    start_button.connect("pressed", Callable(self, "new_game"))
-    start_button.focus_mode = Control.FOCUS_NONE  # 🔥 Spacebar 입력 차단
+	BgMusic.play_music_play()
+	# game start
+	new_game()
+	var start_button = $HUD.get_node("StartButton")
+	start_button.connect("pressed", Callable(self, "new_game"))
+	start_button.focus_mode = Control.FOCUS_NONE  # 🔥 Spacebar 입력 차단
 
-    var pause_button = $HUD.get_node("PauseButton")
-    pause_button.connect("pressed", Callable(self, "pause_game"))
-    pause_button.focus_mode = Control.FOCUS_NONE
-    
-    # 터치 이벤트 연결
-    set_process_input(true)
+	var pause_button = $HUD.get_node("PauseButton")
+	pause_button.connect("pressed", Callable(self, "pause_game"))
+	pause_button.focus_mode = Control.FOCUS_NONE
+	
+	# 터치 이벤트 연결
+	set_process_input(true)
 
 # 터치 이벤트 처리
 func _input(event):
@@ -185,13 +188,12 @@ func handler_drag(relative):
 
 # 새로운 게임 시작
 func new_game():
-    if game_running:
-        return  # 게임이 이미 실행 중인 경우 함수 종료
-    # 변수 초기화
-    level = 1
-    initial_score = 5
-    move_limit = -1
-    start_level()
+	# 변수 초기화
+	BgMusic.pause_fx(BgMusic.loss_effect_sound)
+	level = 1
+	initial_score = 5
+	move_limit = -1
+	start_level()
 
 # 게임 시작 시 타이머 초기화
 func start_level():
@@ -200,6 +202,8 @@ func start_level():
 	speed = 1.0
 	game_running = true
 	is_paused = false
+	is_game_over = false  # 게임 오버 상태 초기화
+	$HUD.get_node("PauseButton").show()  # PauseButton 활성화
 	steps = [0, 0, 0]  # 0:left 1:right, 2:down
 	move_count = 0  # 움직임 횟수 초기화
 	time_left = 10 * 60  # 10분 (초 단위)
@@ -446,10 +450,7 @@ func check_game_over():
 	for i in active_piece:
 		if not is_free(i + cur_pos):
 			land_piece()
-			$HUD.get_node("GameOverLabel").show()
-			game_running = false
-			BgMusic.pause_music(BgMusic.play2_music)
-			BgMusic.play_loss_effect_sound()
+			game_over()
 			
 func drop_piece():
 	while can_move(Vector2i.DOWN):  # 아래로 이동할 수 있을 때까지 반복
@@ -477,6 +478,9 @@ func show_level_up_and_fireworks():
 
 # 게임을 일시 중지하는 함수
 func pause_game():
+	if is_game_over:
+		return  
+
 	if is_paused:
 		is_paused = false
 		game_running = true
@@ -497,5 +501,7 @@ func add_random_blocks(rows):
 func game_over():
 	$HUD.get_node("GameOverLabel").show()
 	game_running = false
+	is_game_over = true
+	$HUD.get_node("PauseButton").hide()  # PauseButton 비활성화
 	BgMusic.pause_music(BgMusic.play2_music)
 	BgMusic.play_loss_effect_sound()
