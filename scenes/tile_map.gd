@@ -58,7 +58,7 @@ const start_pos := Vector2i(5,1)
 var cur_pos:Vector2i
 var speed : float
 const ACCEL : float = 0.1
-var move_delay = 0.1  # 이동 속도 조절
+var move_delay = 0.0.5  # 이동 속도 조절
 var move_timer = 0.0
 
 # 드래그 이동 속도 조절 변수
@@ -105,6 +105,9 @@ var ghost_layer : int = 2
 
 # 드래그 방향 추적 변수
 var drag_direction : String = ""
+
+# 타이머 변수 초기화
+var time_left = 10 * 60  # 10분 (초 단위)
 
 # Called when the node enters the scene tree for the first time.
 func _ready():
@@ -188,7 +191,7 @@ func new_game():
 	move_limit = -1
 	start_level()
 
-# 레벨 시작
+# 게임 시작 시 타이머 초기화
 func start_level():
 	# 변수 초기화
 	score = initial_score
@@ -197,16 +200,17 @@ func start_level():
 	is_paused = false
 	steps = [0, 0, 0]  # 0:left 1:right, 2:down
 	move_count = 0  # 움직임 횟수 초기화
-	if level > 1:
-		move_limit = 200 - (level - 1) * 5  # 레벨에 따라 움직임 제한 설정
-	else:
-		move_limit = -1  # 첫 번째 레벨은 무제한 이동
+	time_left = 10 * 60  # 10분 (초 단위)
+	# if level > 1:
+	#     move_limit = 200 - (level - 1) * 5  # 레벨에 따라 움직임 제한 설정
+	# else:
+	#     move_limit = -1  # 첫 번째 레벨은 무제한 이동
 	$HUD.get_node("GameOverLabel").hide()
 	$HUD.get_node("ScoreLabel").text = str(score)
-	if move_limit < 0:
-		$HUD.get_node("MoveLabel").text = "무제한"
-	else:
-		$HUD.get_node("MoveLabel").text = str(move_limit)
+	# if move_limit < 0:
+	#     $HUD.get_node("MoveLabel").text = "무제한"
+	# else:
+	#     $HUD.get_node("MoveLabel").text = str(move_limit)
 	$HUD.get_node("LevelLabel").text = str(level)
 	# 클리어
 	clear_board()
@@ -224,11 +228,21 @@ func start_level():
 	BgMusic.resume_music(BgMusic.play2_music)
 
 
-# Called every frame. 'delta' is the elapsed time since the previous frame.
+# 타이머 업데이트 및 표시
 func _process(delta):
 	if game_running:
 		move_timer += delta
 		drag_move_timer += delta  # 드래그 이동 타이머 업데이트
+
+		# 타이머 업데이트
+		time_left -= delta
+		if time_left <= 0:
+			game_over()
+		else:
+			var minutes = int(time_left) / 60
+			var seconds = int(time_left) % 60
+			$HUD.get_node("TimerLabel").text = str(minutes).pad_zeros(2) + ":" + str(seconds).pad_zeros(2)
+
 		# 🔥 키 입력을 지속적으로 감지 (빠른 반응)
 		if move_timer >= move_delay:
 			if Input.is_action_pressed("ui_left"):
@@ -369,14 +383,14 @@ func land_piece():
 	# 각 세그먼트를 활성 레이어에서 제거하고 보드 레이어로 이동
 	for i in active_piece:
 		erase_cell(active_layer, cur_pos + i)
-		set_cell(board_layer, cur_pos+i, tile_id, piece_atlas)
+		set_cell(board_layer, cur_pos + i, tile_id, piece_atlas)
 	move_count += 1  # 블록이 바닥에 닿았을 때 움직임 횟수 증가
-	if move_limit < 0:
-		$HUD.get_node("MoveLabel").text = "무제한"
-	else:
-		$HUD.get_node("MoveLabel").text = str(max(0, move_limit - move_count))  # 남은 움직임 업데이트
-	if move_limit > 0 and move_count >= move_limit:
-		game_over()  # 움직임 제한 초과 시 게임 오버 처리
+	# if move_limit < 0:
+	#     $HUD.get_node("MoveLabel").text = "무제한"
+	# else:
+	#     $HUD.get_node("MoveLabel").text = str(max(0, move_limit - move_count))  # 남은 움직임 업데이트
+	# if move_limit > 0 and move_count >= move_limit:
+	#     game_over()  # 움직임 제한 초과 시 게임 오버 처리
 
 func clear_panel():
 	for i in range(0, 40) :
@@ -432,6 +446,8 @@ func check_game_over():
 			land_piece()
 			$HUD.get_node("GameOverLabel").show()
 			game_running = false
+			BgMusic.pause_music(BgMusic.play2_music)
+			BgMusic.play_loss_effect_sound()
 			
 func drop_piece():
 	while can_move(Vector2i.DOWN):  # 아래로 이동할 수 있을 때까지 반복

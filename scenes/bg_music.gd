@@ -79,10 +79,10 @@ func effect_block3_play():
 	play_fx(block3_effect)   
 
 func effect_block4_play():
-	play_fx(block4_effect)
+	play_fx(block4_effect ,3.0)
 
 func play_levelup_sound():
 	play_fx(levelup_sound)  # levelupSound 재생 함수 추가
 
 func play_loss_effect_sound():
-	play_fx(loss_effect_sound)  # lossEffectSound 재생 함수 추가
+	play_fx(loss_effect_sound, -2)  # lossEffectSound 재생 함수 추가

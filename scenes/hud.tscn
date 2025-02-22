@@ -48,30 +48,30 @@ offset = Vector2(50, 50)
 scale = Vector2(1.26, 1.26)
 transform = Transform2D(1.26, 0, 0, 1.26, 50, 50)
 
-[node name="move" type="Label" parent="."]
-offset_left = 22.2222
-offset_top = 53.1746
-offset_right = 202.222
-offset_bottom = 108.175
+[node name="time" type="Label" parent="."]
+offset_left = 3.17461
+offset_top = 54.7619
+offset_right = 183.174
+offset_bottom = 109.762
 theme_override_font_sizes/font_size = 40
-text = "움직임
+text = "게임시간
 "
 vertical_alignment = 1
 
 [node name="score" type="Label" parent="."]
-offset_left = 23.2222
-offset_top = 112.175
-offset_right = 250.222
-offset_bottom = 181.175
+offset_left = 4.17458
+offset_top = 113.762
+offset_right = 231.174
+offset_bottom = 182.762
 theme_override_font_sizes/font_size = 40
 text = "남은블록"
 vertical_alignment = 1
 
 [node name="score2" type="Label" parent="."]
-offset_left = 27.2222
-offset_top = 182.175
-offset_right = 254.222
-offset_bottom = 251.175
+offset_left = 7.93651
+offset_top = 184.127
+offset_right = 234.937
+offset_bottom = 253.127
 theme_override_font_sizes/font_size = 40
 text = "레벨"
 vertical_alignment = 1
@@ -85,11 +85,11 @@ theme_override_font_sizes/font_size = 40
 text = "0"
 horizontal_alignment = 1
 
-[node name="MoveLabel" type="Label" parent="."]
-offset_left = 140.222
-offset_top = 55.1746
-offset_right = 267.222
-offset_bottom = 124.175
+[node name="TimerLabel" type="Label" parent="."]
+offset_left = 142.063
+offset_top = 50.7936
+offset_right = 269.063
+offset_bottom = 119.794
 theme_override_font_sizes/font_size = 40
 text = "0
 "
